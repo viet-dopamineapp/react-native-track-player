@@ -8,7 +8,6 @@
     "build": "rimraf lib && tsc",
     "lint": "eslint \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "yarn build",
     "prepublishOnly": "yarn lint",
     "preversion": "yarn lint",
     "version": "yarn format && git add -A src",

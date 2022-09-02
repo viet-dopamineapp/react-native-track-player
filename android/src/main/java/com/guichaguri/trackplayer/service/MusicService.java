@@ -74,10 +74,14 @@ public class MusicService extends HeadlessJsTaskService {
             if(reactContext == null || !reactContext.hasCurrentActivity()) {
                 String channel = Utils.getNotificationChannel((Context) this);
 
-                // Sets the service to foreground with an empty notification
-                startForeground(1, new NotificationCompat.Builder(this, channel).build());
-                // Stops the service right after
-                stopSelf();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    // Can not startForeground
+                } else {
+                    // Sets the service to foreground with an empty notification
+                    startForeground(1, new NotificationCompat.Builder(this, channel).build());
+                    // Stops the service right after
+                    stopSelf();
+                }
             }
         }
     }

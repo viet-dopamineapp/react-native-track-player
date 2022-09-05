@@ -119,8 +119,12 @@ public class MusicService extends HeadlessJsTaskService {
     @Override
     public void onCreate() {
         super.onCreate();
-        String channel = Utils.getNotificationChannel((Context) this);
-        startForeground(1, new NotificationCompat.Builder(this, channel).build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Can not startForeground
+        } else {
+            String channel = Utils.getNotificationChannel((Context) this);
+            startForeground(1, new NotificationCompat.Builder(this, channel).build());
+        }
     }
 
     @Override

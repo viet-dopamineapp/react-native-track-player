@@ -321,7 +321,11 @@ public class MetadataManager {
 
     private void updateNotification() {
         if(session.isActive()) {
-            service.startForeground(1, builder.build());
+            try {
+                service.startForeground(1, builder.build());
+            } catch (Exception e) {
+
+            }
         } else {
             service.stopForeground(true);
         }

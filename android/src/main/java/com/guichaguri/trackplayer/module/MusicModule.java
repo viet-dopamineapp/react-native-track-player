@@ -92,24 +92,28 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
      * Waits for a connection to the service and/or runs the {@link Runnable} in the player thread
      */
     private void waitForConnection(Runnable r) {
-        if(binder != null) {
-            binder.post(r);
-            return;
-        } else {
-            initCallbacks.add(r);
+        try {
+            if(binder != null) {
+                binder.post(r);
+                return;
+            } else {
+                initCallbacks.add(r);
+            }
+
+            if(connecting) return;
+
+            ReactApplicationContext context = getReactApplicationContext();
+
+            // Binds the service to get a MediaWrapper instance
+            Intent intent = new Intent(context, MusicService.class);
+            context.startService(intent);
+            intent.setAction(Utils.CONNECT_INTENT);
+            context.bindService(intent, this, 0);
+
+            connecting = true;
+        } catch (Exception e) {
+
         }
-
-        if(connecting) return;
-
-        ReactApplicationContext context = getReactApplicationContext();
-
-        // Binds the service to get a MediaWrapper instance
-        Intent intent = new Intent(context, MusicService.class);
-        context.startService(intent);
-        intent.setAction(Utils.CONNECT_INTENT);
-        context.bindService(intent, this, 0);
-
-        connecting = true;
     }
 
     /* ****************************** API ****************************** */

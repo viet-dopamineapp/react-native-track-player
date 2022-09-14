@@ -73,15 +73,12 @@ public class MusicService extends HeadlessJsTaskService {
             // Checks whether there is a React activity
             if(reactContext == null || !reactContext.hasCurrentActivity()) {
                 String channel = Utils.getNotificationChannel((Context) this);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    // Can not startForeground
-                } else {
+                try {
                     // Sets the service to foreground with an empty notification
                     startForeground(1, new NotificationCompat.Builder(this, channel).build());
                     // Stops the service right after
                     stopSelf();
-                }
+                } catch (Exception e) {}
             }
         }
     }
@@ -101,11 +98,11 @@ public class MusicService extends HeadlessJsTaskService {
         if(intent != null && Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
             // Check if the app is on background, then starts a foreground service and then ends it right after
             onStartForeground();
-            
+
             if(manager != null) {
                 MediaButtonReceiver.handleIntent(manager.getMetadata().getSession(), intent);
             }
-            
+
             return START_NOT_STICKY;
         }
 
@@ -119,12 +116,10 @@ public class MusicService extends HeadlessJsTaskService {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Can not startForeground
-        } else {
+        try {
             String channel = Utils.getNotificationChannel((Context) this);
             startForeground(1, new NotificationCompat.Builder(this, channel).build());
-        }
+        } catch (Exception e) {}
     }
 
     @Override
@@ -132,7 +127,9 @@ public class MusicService extends HeadlessJsTaskService {
         super.onDestroy();
 
         destroy();
-        stopForeground(true);
+        try {
+            stopForeground(true);
+        } catch(Exception e) {}
     }
 
     @Override
@@ -144,7 +141,9 @@ public class MusicService extends HeadlessJsTaskService {
                 manager.getPlayback().stop();
             }
             destroy();
-            stopSelf();
+            try {
+                stopSelf();
+            } catch(Exception e) {}
         }
     }
 }
